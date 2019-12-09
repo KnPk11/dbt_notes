@@ -1,4 +1,4 @@
-Last updated: 2019-11-29
+Last updated: 2019-12-06
 
             ========== ADMIN ==========
 			
@@ -55,7 +55,7 @@ columns:
 
 # For reusing repetitive code / case statements
 
-# Define
+# Define a macro
 	{% macro macro1(dyn_column) %}
 
 	CASE
@@ -65,6 +65,22 @@ columns:
 	END
 
 	{% endmacro %}
+	
+# Define a function
+	{% macro function1(input) %}
+	
+		CREATE OR REPLACE FUNCTION {{target.schema}}.function(input STRING)
+		RETURNS 
+				...
+
+	{% endmacro %}
+
+	# Add to dbt_project.yml
+	on-run-start:
+    - '{{function1()}}'
+	
+	# Call in a script
+	{{ target.schema }}.function1(column1) AS col1
 
 # Select
 	SELECT {{ macro1(dyn_column = 'source_column') }} AS output
