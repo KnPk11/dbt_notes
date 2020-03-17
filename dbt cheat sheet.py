@@ -1,10 +1,11 @@
-Last updated: 2019-12-06
+Last updated: 2020-02-12
 
-            ========== ADMIN ==========
-			
+========== ADMIN ==========
+
+pip install dbt
 pip install --upgrade dbt
 
-						========== GETTING STARTED RUNNING THE ELT (USING CONSOLE)  ==========
+========== GETTING STARTED RUNNING THE ELT (USING CONSOLE)  ==========
 
 			------ Commands ------
 cd {dev folder / src} # set the project working directory
@@ -17,7 +18,7 @@ dbt test -m +table # run custom tests on the tables after ELT run
 			------ Notes ------
 # + before table name: upstream, after table name: downstream
 
-						========== CREATING QUERIES ==========
+========== CREATING QUERIES ==========
 
 			------ Working with source tables ------
 
@@ -42,7 +43,7 @@ dbt test -m +table # run custom tests on the tables after ELT run
 			
 # Create a .yml file inside the desired directory with the same name as the directory
 	
-version: 1
+version: 2
 
 - name: table_name
 columns:
@@ -92,7 +93,29 @@ columns:
 		materialized = "table",
 	  )
 	}}
+	
+	
+========== SNAPSHOT & LOG TABLES ==========
 
+{% snapshot table_name %}
+
+    {{
+        config(
+          target_database='db_name',
+          target_schema='schema_name',
+          strategy='check', # comparison strategy
+          unique_key='pk', # primary key for comparison
+          check_cols=['column1', 'column2', 'column3'], # columns to compare
+          tags=['tag_name'] # what model to associate with
+        )
+    }}
+    
+    SELECT * FROM {{ ref('original_table') }} 
+    
+{% endsnapshot %}
+
+========== OTHER ==========
+						
 			------ Settings ------
 
 # Dev sampling
@@ -106,5 +129,7 @@ columns:
 
 
 
+References:
+https://docs.getdbt.com/docs/snapshots
 
 Author: Konstantin
