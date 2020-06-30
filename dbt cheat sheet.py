@@ -1,4 +1,4 @@
-Last updated: 2020-02-12
+Updated: 2020-06-22
 
 ========== ADMIN ==========
 
@@ -11,9 +11,15 @@ pip install --upgrade dbt
 cd {dev folder / src} # set the project working directory
 dbt deps # load custom dependencies
 dbt seed # uploads stand-alone csv files to db
-dbt compile -m +table # compiles the script 
-dbt run -m +table # runs the ELT
-dbt test -m +table # run custom tests on the tables after ELT run
+dbt compile -m table # compiles the script
+dbt run -m table # runs the ELT
+dbt run -m +table+ # runs table1 with both upstream and downstream dependencies
+dbt run -m table1 table2 table3 # runs a list of tables (do not separate with a , it won't work)
+dbt run -m tag:tag_name1 --exclude tag:tag_name2 # runs one model and excludes the other
+dbt run -m @table1 # run all the upstream/downstream dependencies of all the models that depend on this table
+dbt test -m table # run custom tests on the tables after ELT run
+
+
 
 			------ Notes ------
 # + before table name: upstream, after table name: downstream
@@ -94,6 +100,9 @@ columns:
 	  )
 	}}
 	
+========== INCREMENTAL MODELS ==========
+# Rerunning an incremental model fully
+dbt run --full-refresh -m +table # fully reprocesses the table
 	
 ========== SNAPSHOT & LOG TABLES ==========
 
@@ -129,7 +138,7 @@ columns:
 
 
 
+Author: Konstantin
+
 References:
 https://docs.getdbt.com/docs/snapshots
-
-Author: Konstantin
